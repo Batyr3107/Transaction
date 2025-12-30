@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../core/constants/app_strings.dart';
 import '../../core/errors/app_exceptions.dart';
+import '../../core/services/language_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/analysis_result.dart';
 import '../../data/services/pdf_parser_service.dart';
 import '../widgets/error_message.dart';
+import '../widgets/language_switcher.dart';
 import '../widgets/privacy_badge.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/upload_button.dart';
 
 /// Main home screen for PDF analysis
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final LanguageService languageService;
+
+  const HomeScreen({
+    super.key,
+    required this.languageService,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,11 +29,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PdfParserService _parserService = PdfParserService();
-  final NumberFormat _numberFormat = NumberFormat('#,###', 'ru_RU');
 
   AnalysisResult? _result;
   bool _isLoading = false;
   String? _error;
+
+  NumberFormat get _numberFormat {
+    // Use locale-specific number format
+    final locale = widget.languageService.currentLocale.languageCode;
+    return NumberFormat('#,###', locale == 'kk' ? 'kk_KZ' : 'ru_RU');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +47,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Builds upload screen
   Widget _buildUploadScreen() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          LanguageSwitcher(languageService: widget.languageService),
+          const SizedBox(width: AppTheme.spaceSmall),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -45,16 +67,18 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  AppStrings.appTitle,
+                  l10n.appTitle,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: AppTheme.spaceHuge),
                 UploadButton(
                   isLoading: _isLoading,
                   onTap: _pickAndAnalyzePdf,
+                  uploadText: l10n.uploadButton,
+                  analyzingText: l10n.analyzing,
                 ),
                 const SizedBox(height: AppTheme.spaceExtraLarge),
-                const PrivacyBadge(),
+                PrivacyBadge(privacyText: l10n.privacyMessage),
                 if (_error != null) ...[
                   const SizedBox(height: AppTheme.spaceLarge),
                   ErrorMessage(message: _error!),
@@ -69,8 +93,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Builds result screen
   Widget _buildResultScreen() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          LanguageSwitcher(languageService: widget.languageService),
+          const SizedBox(width: AppTheme.spaceSmall),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -79,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  AppStrings.appTitle,
+                  l10n.appTitle,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: AppTheme.spaceLarge),
@@ -94,20 +128,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 StatCard(
                   icon: Icons.people,
                   value: '${_result!.peopleCount}',
-                  label: AppStrings.getPeoplePlural(_result!.peopleCount),
+                  label: l10n.peopleCount(_result!.peopleCount),
                   color: AppTheme.infoColor,
                 ),
                 const SizedBox(height: AppTheme.spaceLarge),
                 StatCard(
                   icon: Icons.attach_money,
                   value: '${_numberFormat.format(_result!.totalAmount.round())} ₸',
-                  label: AppStrings.sent,
+                  label: l10n.sent,
                   color: AppTheme.successColor,
                 ),
                 const SizedBox(height: AppTheme.spaceExtraLarge),
                 ElevatedButton(
                   onPressed: _reset,
-                  child: const Text(AppStrings.loadAnother),
+                  child: Text(l10n.loadAnother),
                 ),
               ],
             ),
@@ -119,6 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Picks PDF file and analyzes it
   Future<void> _pickAndAnalyzePdf() async {
+    final l10n = AppLocalizations.of(context)!;
+
     setState(() {
       _isLoading = true;
       _error = null;
@@ -148,8 +184,28 @@ class _HomeScreenState extends State<HomeScreen> {
           _isLoading = false;
         });
       }
+    } on FileTooLargeException catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = '${l10n.errorFileTooBig}: ${e.details}';
+          _isLoading = false;
+        });
+      }
+    } on InvalidFileFormatException catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = '${l10n.errorInvalidFile}: ${e.details}';
+          _isLoading = false;
+        });
+      }
+    } on OperationTimeoutException catch (_) {
+      if (mounted) {
+        setState(() {
+          _error = l10n.errorTimeout;
+          _isLoading = false;
+        });
+      }
     } on AppException catch (e) {
-      // Handle known exceptions
       if (mounted) {
         setState(() {
           _error = e.toString();
@@ -157,10 +213,9 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      // Handle unexpected errors
       if (mounted) {
         setState(() {
-          _error = '${AppStrings.errorUnknown}: $e';
+          _error = '${l10n.errorUnknown}: $e';
           _isLoading = false;
         });
       }

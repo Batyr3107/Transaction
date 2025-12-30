@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_strings.dart';
 
 /// Upload button widget for PDF file selection
 class UploadButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onTap;
+  final String uploadText;
+  final String analyzingText;
 
   const UploadButton({
     super.key,
     required this.isLoading,
     required this.onTap,
+    required this.uploadText,
+    required this.analyzingText,
   });
 
   @override
@@ -45,7 +48,7 @@ class UploadButton extends StatelessWidget {
                 ),
               const SizedBox(height: AppTheme.spaceLarge),
               Text(
-                isLoading ? AppStrings.analyzing : AppStrings.uploadButton,
+                isLoading ? analyzingText : uploadText,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],

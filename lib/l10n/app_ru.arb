@@ -1,0 +1,88 @@
+{
+  "@@locale": "ru",
+
+  "appTitle": "Kaspi Analyzer",
+  "@appTitle": {
+    "description": "Application title"
+  },
+
+  "uploadButton": "Загрузить выписку",
+  "@uploadButton": {
+    "description": "Upload button text"
+  },
+
+  "analyzing": "Анализ...",
+  "@analyzing": {
+    "description": "Analyzing status text"
+  },
+
+  "privacyMessage": "Данные не покидают устройство",
+  "@privacyMessage": {
+    "description": "Privacy message"
+  },
+
+  "sent": "отправлено",
+  "@sent": {
+    "description": "Sent label for total amount"
+  },
+
+  "loadAnother": "Загрузить другую",
+  "@loadAnother": {
+    "description": "Load another file button"
+  },
+
+  "peopleCount": "{count, plural, =1{человек} few{человека} other{человек}}",
+  "@peopleCount": {
+    "description": "People count with plural forms",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "errorAnalyzing": "Ошибка при анализе файла",
+  "@errorAnalyzing": {
+    "description": "Error analyzing file"
+  },
+
+  "errorFileTooBig": "Файл слишком большой",
+  "@errorFileTooBig": {
+    "description": "File too big error"
+  },
+
+  "errorInvalidFile": "Неверный формат файла",
+  "@errorInvalidFile": {
+    "description": "Invalid file format error"
+  },
+
+  "errorTimeout": "Превышено время ожидания",
+  "@errorTimeout": {
+    "description": "Timeout error"
+  },
+
+  "errorUnknown": "Произошла неизвестная ошибка",
+  "@errorUnknown": {
+    "description": "Unknown error"
+  },
+
+  "language": "Язык",
+  "@language": {
+    "description": "Language label"
+  },
+
+  "languageRussian": "Русский",
+  "@languageRussian": {
+    "description": "Russian language name"
+  },
+
+  "languageKazakh": "Қазақша",
+  "@languageKazakh": {
+    "description": "Kazakh language name"
+  },
+
+  "selectLanguage": "Выберите язык",
+  "@selectLanguage": {
+    "description": "Select language dialog title"
+  }
+}

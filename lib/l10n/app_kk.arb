@@ -1,0 +1,42 @@
+{
+  "@@locale": "kk",
+
+  "appTitle": "Kaspi Analyzer",
+
+  "uploadButton": "Үзінді көшіруді жүктеу",
+
+  "analyzing": "Талдау...",
+
+  "privacyMessage": "Деректер құрылғыдан шықпайды",
+
+  "sent": "жіберілді",
+
+  "loadAnother": "Басқасын жүктеу",
+
+  "peopleCount": "{count, plural, =1{адам} other{адам}}",
+  "@peopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "errorAnalyzing": "Файлды талдау кезінде қате",
+
+  "errorFileTooBig": "Файл тым үлкен",
+
+  "errorInvalidFile": "Файл пішімі дұрыс емес",
+
+  "errorTimeout": "Күту уақыты асып кетті",
+
+  "errorUnknown": "Белгісіз қате орын алды",
+
+  "language": "Тіл",
+
+  "languageRussian": "Русский",
+
+  "languageKazakh": "Қазақша",
+
+  "selectLanguage": "Тілді таңдаңыз"
+}

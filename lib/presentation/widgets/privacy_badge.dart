@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/constants/app_strings.dart';
 
 /// Privacy information badge
 class PrivacyBadge extends StatelessWidget {
-  const PrivacyBadge({super.key});
+  final String privacyText;
+
+  const PrivacyBadge({
+    super.key,
+    required this.privacyText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +21,12 @@ class PrivacyBadge extends StatelessWidget {
           color: AppTheme.textSecondary,
         ),
         const SizedBox(width: AppTheme.spaceSmall),
-        Text(
-          AppStrings.privacyMessage,
-          style: Theme.of(context).textTheme.bodySmall,
+        Flexible(
+          child: Text(
+            privacyText,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
