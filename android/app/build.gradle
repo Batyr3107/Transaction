@@ -23,15 +23,50 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
+
+        // Enable multidex for better compatibility
+        multiDexEnabled true
     }
 
     buildTypes {
-        release {
-            signingConfig = signingConfigs.debug
+        debug {
+            // Debug configuration
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
         }
+
+        release {
+            // Enable code shrinking, obfuscation, and optimization
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+
+            // ProGuard files
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            // For now use debug signing (replace with release signing for production)
+            signingConfig = signingConfigs.debug
+
+            // Native symbols for crash reporting
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
+        }
+    }
+
+    // Build optimization
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Multidex support for older Android versions
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
