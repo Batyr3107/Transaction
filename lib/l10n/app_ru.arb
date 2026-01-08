@@ -84,5 +84,60 @@
   "selectLanguage": "Выберите язык",
   "@selectLanguage": {
     "description": "Select language dialog title"
+  },
+
+  "theme": "Тема",
+  "@theme": {
+    "description": "Theme label"
+  },
+
+  "themeLight": "Светлая",
+  "@themeLight": {
+    "description": "Light theme"
+  },
+
+  "themeDark": "Тёмная",
+  "@themeDark": {
+    "description": "Dark theme"
+  },
+
+  "themeSystem": "Системная",
+  "@themeSystem": {
+    "description": "System theme"
+  },
+
+  "share": "Поделиться",
+  "@share": {
+    "description": "Share button"
+  },
+
+  "analysisComplete": "Анализ завершён",
+  "@analysisComplete": {
+    "description": "Analysis complete message"
+  },
+
+  "period": "Период",
+  "@period": {
+    "description": "Period label"
+  },
+
+  "recipients": "Получатели",
+  "@recipients": {
+    "description": "Recipients label"
+  },
+
+  "totalAmount": "Общая сумма",
+  "@totalAmount": {
+    "description": "Total amount label"
+  },
+
+  "privacyTitle": "Ваши данные защищены",
+  "@privacyTitle": {
+    "description": "Privacy title"
+  },
+
+  "privacyDescription": "Все вычисления происходят локально на вашем устройстве",
+  "@privacyDescription": {
+    "description": "Privacy description"
   }
 }

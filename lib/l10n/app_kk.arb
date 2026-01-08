@@ -38,5 +38,27 @@
 
   "languageKazakh": "Қазақша",
 
-  "selectLanguage": "Тілді таңдаңыз"
+  "selectLanguage": "Тілді таңдаңыз",
+
+  "theme": "Тақырып",
+
+  "themeLight": "Ашық",
+
+  "themeDark": "Қараңғы",
+
+  "themeSystem": "Жүйелік",
+
+  "share": "Бөлісу",
+
+  "analysisComplete": "Талдау аяқталды",
+
+  "period": "Кезең",
+
+  "recipients": "Алушылар",
+
+  "totalAmount": "Жалпы сома",
+
+  "privacyTitle": "Деректеріңіз қорғалған",
+
+  "privacyDescription": "Барлық есептеулер құрылғыңызда жергілікті түрде орындалады"
 }
