@@ -1,8 +1,8 @@
 name: kaspi_analyzer
-description: Simple offline app to analyze Kaspi Gold statements
+description: Beautiful offline app to analyze Kaspi Gold statements with modern UI
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 2.0.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -12,10 +12,27 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+
+  # PDF parsing
   syncfusion_flutter_pdf: ^26.2.14
+
+  # File operations
   file_picker: ^8.1.6
+  share_plus: ^10.1.4
+  path_provider: ^2.1.5
+
+  # Internationalization
   intl: ^0.19.0
+
+  # Storage
   shared_preferences: ^2.3.3
+
+  # Animations
+  flutter_animate: ^4.5.2
+  shimmer: ^3.0.0
+
+  # Charts
+  fl_chart: ^0.70.2
 
 dev_dependencies:
   flutter_test:
