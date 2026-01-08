@@ -45,12 +45,17 @@ class _UploadButtonState extends State<UploadButton>
   Widget build(BuildContext context) {
     final isDark = AppTheme.isDark(context);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: widget.isLoading ? null : widget.onTap,
-        child: AnimatedBuilder(
+    return Semantics(
+      button: true,
+      enabled: !widget.isLoading,
+      label: widget.isLoading ? widget.analyzingText : widget.uploadText,
+      hint: 'Tap to select PDF file for analysis',
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          onTap: widget.isLoading ? null : widget.onTap,
+          child: AnimatedBuilder(
           animation: _pulseController,
           builder: (context, child) {
             final pulseValue = _pulseController.value;
@@ -143,6 +148,7 @@ class _UploadButtonState extends State<UploadButton>
             );
           },
         ),
+      ),
       ),
     )
         .animate()

@@ -9,10 +9,19 @@ class TransferInfo {
   /// Transfer amount (absolute value)
   final double amount;
 
+  /// Creates a TransferInfo with validation
+  ///
+  /// Throws [AssertionError] if:
+  /// - recipient is empty or whitespace-only
+  /// - amount is negative, NaN, or infinite
   const TransferInfo({
     required this.recipient,
     required this.amount,
-  });
+  })  : assert(recipient != '', 'Recipient cannot be empty'),
+        assert(amount >= 0, 'Amount must be non-negative'),
+        assert(amount != double.nan, 'Amount cannot be NaN'),
+        assert(amount != double.infinity, 'Amount cannot be infinite'),
+        assert(amount != double.negativeInfinity, 'Amount cannot be negative infinity');
 
   @override
   bool operator ==(Object other) {

@@ -12,20 +12,34 @@ import 'presentation/screens/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize services
+  // Initialize services with error handling
   final languageService = LanguageService();
   final themeService = ThemeService();
 
-  await Future.wait([
-    languageService.initialize(),
-    themeService.initialize(),
-  ]);
+  try {
+    await Future.wait([
+      languageService.initialize(),
+      themeService.initialize(),
+    ]);
+  } catch (e, stackTrace) {
+    // Log error but continue with defaults
+    FlutterError.reportError(FlutterErrorDetails(
+      exception: e,
+      stack: stackTrace,
+      library: 'main',
+      context: ErrorDescription('during service initialization'),
+    ));
+  }
 
   // Set preferred orientations (portrait only)
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  try {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  } catch (e) {
+    // Ignore orientation errors on unsupported platforms
+  }
 
   runApp(KaspiAnalyzerApp(
     languageService: languageService,
@@ -61,9 +75,8 @@ class _KaspiAnalyzerAppState extends State<KaspiAnalyzerApp> {
       builder: (context, child) {
         final isDark = widget.themeService.isDarkMode;
 
-        // Update system UI based on theme
-        SystemChrome.setSystemUIOverlayStyle(
-          SystemUiOverlayStyle(
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
             systemNavigationBarColor: isDark
@@ -72,9 +85,7 @@ class _KaspiAnalyzerAppState extends State<KaspiAnalyzerApp> {
             systemNavigationBarIconBrightness:
                 isDark ? Brightness.light : Brightness.dark,
           ),
-        );
-
-        return MaterialApp(
+          child: MaterialApp(
           title: 'Kaspi Analyzer',
           debugShowCheckedModeBanner: false,
 
@@ -109,6 +120,7 @@ class _KaspiAnalyzerAppState extends State<KaspiAnalyzerApp> {
                     themeService: widget.themeService,
                   ),
           ),
+        ),
         );
       },
     );

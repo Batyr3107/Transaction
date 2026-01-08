@@ -15,10 +15,13 @@ class LanguageSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final isDark = AppTheme.isDark(context);
+    return ListenableBuilder(
+      listenable: languageService,
+      builder: (context, child) {
+        final l10n = AppLocalizations.of(context)!;
+        final isDark = AppTheme.isDark(context);
 
-    return PopupMenuButton<Locale>(
+        return PopupMenuButton<Locale>(
       offset: const Offset(0, 40),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
@@ -128,6 +131,8 @@ class LanguageSwitcher extends StatelessWidget {
           ],
         ),
       ),
+    );
+      },
     );
   }
 

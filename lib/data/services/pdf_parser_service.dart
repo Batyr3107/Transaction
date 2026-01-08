@@ -1,11 +1,19 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:path/path.dart' as p;
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/errors/app_exceptions.dart';
 import '../models/analysis_result.dart';
 import '../models/transfer_info.dart';
+
+/// Maximum number of pages allowed in PDF to prevent PDF bomb attacks
+const int _maxPdfPages = 500;
+
+/// PDF magic bytes signature (%PDF)
+const List<int> _pdfMagicBytes = [0x25, 0x50, 0x44, 0x46];
 
 /// Service for parsing Kaspi Gold PDF statements
 /// Extracts transfer information and calculates statistics
@@ -55,6 +63,9 @@ class PdfParserService {
 
   /// Validates file before parsing
   Future<void> _validateFile(String filePath) async {
+    // Security: Validate path to prevent Path Traversal attacks
+    _validatePath(filePath);
+
     final file = File(filePath);
 
     // Check if file exists
@@ -75,6 +86,44 @@ class PdfParserService {
         fileSizeBytes: fileSize,
         maxSizeBytes: AppConstants.maxFileSizeBytes,
       );
+    }
+
+    // Security: Validate MIME type by checking magic bytes
+    await _validateMimeType(file);
+  }
+
+  /// Validates file path to prevent Path Traversal attacks
+  void _validatePath(String filePath) {
+    // Normalize the path to resolve .. and . components
+    final normalizedPath = p.normalize(filePath);
+
+    // Check for path traversal patterns
+    if (filePath.contains('..') ||
+        normalizedPath != filePath ||
+        !p.isAbsolute(normalizedPath)) {
+      throw PdfParsingException(
+        details: 'Invalid file path: potential path traversal detected',
+      );
+    }
+  }
+
+  /// Validates PDF MIME type by checking magic bytes
+  Future<void> _validateMimeType(File file) async {
+    final randomAccess = await file.open(mode: FileMode.read);
+    try {
+      final header = await randomAccess.read(_pdfMagicBytes.length);
+
+      if (header.length < _pdfMagicBytes.length) {
+        throw InvalidFileFormatException(extension: 'unknown');
+      }
+
+      for (int i = 0; i < _pdfMagicBytes.length; i++) {
+        if (header[i] != _pdfMagicBytes[i]) {
+          throw InvalidFileFormatException(extension: 'not-pdf');
+        }
+      }
+    } finally {
+      await randomAccess.close();
     }
   }
 
@@ -98,6 +147,13 @@ class PdfParserService {
       // Read file bytes
       final bytes = await file.readAsBytes();
       document = PdfDocument(inputBytes: bytes);
+
+      // Security: Check page count to prevent PDF bomb attacks
+      if (document.pages.count > _maxPdfPages) {
+        throw PdfParsingException(
+          details: 'PDF has too many pages (${document.pages.count}). Maximum allowed: $_maxPdfPages',
+        );
+      }
 
       // Extract text from all pages
       final fullText = _extractTextFromDocument(document);

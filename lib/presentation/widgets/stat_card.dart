@@ -36,9 +36,12 @@ class StatCard extends StatelessWidget {
           end: Alignment.bottomRight,
         );
 
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
+    return Semantics(
+      label: '$label: $value',
+      button: onTap != null,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
         duration: AppTheme.durationMedium,
         curve: AppTheme.curveDefault,
         width: double.infinity,
@@ -118,6 +121,7 @@ class StatCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     )
         .animate(delay: Duration(milliseconds: animationDelay))
